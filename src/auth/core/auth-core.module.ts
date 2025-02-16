@@ -1,6 +1,8 @@
-import { Module } from "@nestjs/common";
+import { Module } from '@nestjs/common';
+import { AuthTraditionalModule } from '../traditonal/auth-traditional.module';
 
 @Module({
-    providers: [],
+  imports: [AuthTraditionalModule],
+  providers: [],
 })
 export class AuthCoreModule {}
