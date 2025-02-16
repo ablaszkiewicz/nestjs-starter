@@ -5,16 +5,19 @@ import { createAppModule } from '../../../test/utils/bootstrap';
 import { closeInMemoryMongoServer } from '../../../test/utils/mongo-in-memory-server';
 import { UserEntity } from '../../user/core/entities/user.entity';
 import { Model, Types } from 'mongoose';
+import { AuthUtils } from '../../test/auth-utils';
 
 describe('AuthTraditionalController', () => {
   let app: INestApplication<App>;
   let userModel: Model<UserEntity>;
+  let authUtils: AuthUtils;
 
   beforeAll(async () => {
     const result = await createAppModule();
 
     app = result.app;
     userModel = result.models.userModel;
+    authUtils = new AuthUtils(app);
   });
 
   beforeEach(async () => {
@@ -28,16 +31,57 @@ describe('AuthTraditionalController', () => {
 
   it('registers user and logs him in', async () => {
     // when
-    const response = await request(app.getHttpServer()).post(
-      '/auth/traditional/register',
-    );
+    const response = await request(app.getHttpServer())
+      .post('/auth/traditional/register')
+      .send({
+        email: 'test@test.com',
+        password: 'password',
+      });
 
     // then
     const user = (await userModel.findOne())!;
 
     expect(response.body.token).toContain('ey');
-    expect(user._id).toBeInstanceOf(Types.ObjectId);
+    expect(user.email).toEqual('test@test.com');
 
-    console.log('response.body.token', response.body.token);
+    console.log(user);
+  });
+
+  it('logs user in with correct password', async () => {
+    // given
+    await authUtils.registerUser({
+      email: 'test@test.com',
+      password: 'password',
+    });
+
+    // when
+    const response = await request(app.getHttpServer())
+      .post('/auth/traditional/login')
+      .send({
+        email: 'test@test.com',
+        password: 'password',
+      });
+
+    // then
+    expect(response.body.token).toContain('ey');
+  });
+
+  it('does not log user in with incorrect password', async () => {
+    // given
+    await authUtils.registerUser({
+      email: 'test@test.com',
+      password: 'password',
+    });
+
+    // when
+    const response = await request(app.getHttpServer())
+      .post('/auth/traditional/login')
+      .send({
+        email: 'test@test.com',
+        password: 'incorrect',
+      });
+
+    // then
+    expect(response.status).toBe(401);
   });
 });

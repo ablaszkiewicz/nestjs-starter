@@ -14,6 +14,7 @@ export class UserWriteService {
   public async createUser(dto: CreateUserDto): Promise<IUser> {
     const user = await this.userModel.create({
       email: dto.email,
+      passwordHash: dto.passwordHash,
     });
 
     return UserEntity.mapToInterface(user);

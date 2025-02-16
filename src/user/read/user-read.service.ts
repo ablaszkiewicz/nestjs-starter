@@ -22,7 +22,7 @@ export class UserReadService {
 
   public async readUserByEmail(email: string): Promise<IUser> {
     const user = await this.userModel
-      .find({ email: email })
+      .findOne({ email: email })
       .lean<UserEntity>()
       .exec();
 
