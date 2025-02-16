@@ -19,4 +19,17 @@ export class UserReadService {
 
     return UserEntity.mapToInterface(user);
   }
+
+  public async readUserByEmail(email: string): Promise<IUser> {
+    const user = await this.userModel
+      .find({ email: email })
+      .lean<UserEntity>()
+      .exec();
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return UserEntity.mapToInterface(user);
+  }
 }

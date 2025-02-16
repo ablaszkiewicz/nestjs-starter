@@ -4,7 +4,7 @@ import { App } from 'supertest/types';
 import { createAppModule } from '../../../test/utils/bootstrap';
 import { closeInMemoryMongoServer } from '../../../test/utils/mongo-in-memory-server';
 import { UserEntity } from '../../user/core/entities/user.entity';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 describe('AuthTraditionalController', () => {
   let app: INestApplication<App>;
@@ -26,13 +26,18 @@ describe('AuthTraditionalController', () => {
     await app.close();
   });
 
-  it('registers user', async () => {
+  it('registers user and logs him in', async () => {
+    // when
     const response = await request(app.getHttpServer()).post(
-      '/auth/traditional',
+      '/auth/traditional/register',
     );
 
-    console.log(response.body);
+    // then
+    const user = (await userModel.findOne())!;
 
-    console.log(await userModel.find());
+    expect(response.body.token).toContain('ey');
+    expect(user._id).toBeInstanceOf(Types.ObjectId);
+
+    console.log('response.body.token', response.body.token);
   });
 });

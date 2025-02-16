@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IUser } from './user.interface';
 import { HydratedDocument } from 'mongoose';
+import { AuthMethod } from '../enum/auth-method.enum';
 
 @Schema({ collection: 'users' })
 export class UserEntity {
@@ -9,10 +10,16 @@ export class UserEntity {
   @Prop()
   email: string;
 
+  @Prop()
+  authMethod: AuthMethod;
+
+  @Prop()
+  passwordHash?: string;
+
   public static mapToInterface(user: UserEntity): IUser {
     return {
-      id: user._id,
-      email: user.email,
+      ...user,
+      id: user._id.toString(),
     };
   }
 }

@@ -1,3 +1,3 @@
-export class RegisterTraditioonalDto {
+export class RegisterTraditionalRequest {
   email: string;
 }
