@@ -55,6 +55,6 @@ describe('UserCoreController', () => {
       .set('authorization', `Bearer ${token}`);
 
     // then
-    expect(response.status).toEqual(401);
+    expect(response.status).toEqual(403);
   });
 });
