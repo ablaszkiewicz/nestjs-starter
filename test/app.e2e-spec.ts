@@ -1,13 +1,13 @@
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
-import { createAppModule } from './utils/bootstrap';
+import { createTestApp } from './utils/bootstrap';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
 
   beforeEach(async () => {
-    const result = await createAppModule();
+    const result = await createTestApp();
 
     app = result.app;
   });

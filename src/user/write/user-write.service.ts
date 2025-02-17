@@ -15,6 +15,7 @@ export class UserWriteService {
     const user = await this.userModel.create({
       email: dto.email,
       passwordHash: dto.passwordHash,
+      authMethod: dto.authMethod,
     });
 
     return UserEntity.mapToInterface(user);

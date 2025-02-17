@@ -27,9 +27,10 @@ export class AuthTraditionalService {
     const user = await this.userWriteService.createUser({
       email: dto.email,
       passwordHash,
+      authMethod: AuthMethod.Traditional,
     });
 
-    const token = await this.jwtService.sign({ userId: user.id });
+    const token = await this.jwtService.sign({ id: user.id });
 
     return {
       token,
@@ -49,16 +50,24 @@ export class AuthTraditionalService {
       throw new Error('User does not have password set');
     }
 
-    if (!this.passwordMatchesHash(dto.password, user.passwordHash)) {
+    const passwordMatches = await this.passwordMatchesHash(
+      dto.password,
+      user.passwordHash,
+    );
+
+    if (!passwordMatches) {
       throw new UnauthorizedException();
     }
 
-    const token = await this.jwtService.sign({ userId: user.id });
+    const token = await this.jwtService.sign({ id: user.id });
 
     return { token };
   }
 
-  private passwordMatchesHash(password: string, passwordHash: string): boolean {
+  private async passwordMatchesHash(
+    password: string,
+    passwordHash: string,
+  ): Promise<boolean> {
     return bcrypt.compare(password, passwordHash);
   }
 

@@ -7,7 +7,7 @@ import { UserEntity } from '../../user/core/entities/user.entity';
 import { Model, Types } from 'mongoose';
 import { AuthUtils } from '../../test/auth-utils';
 
-describe('AuthTraditionalController', () => {
+describe('UserCoreController', () => {
   let app: INestApplication<App>;
   let userModel: Model<UserEntity>;
   let authUtils: AuthUtils;
@@ -29,57 +29,32 @@ describe('AuthTraditionalController', () => {
     await app.close();
   });
 
-  it('registers user and logs him in', async () => {
-    // when
-    const response = await request(app.getHttpServer())
-      .post('/auth/traditional/register')
-      .send({
-        email: 'test@test.com',
-        password: 'password',
-      });
-
-    // then
-    const user = (await userModel.findOne())!;
-
-    expect(response.body.token).toContain('ey');
-    expect(user.email).toEqual('test@test.com');
-  });
-
-  it('logs user in with correct password', async () => {
+  it('returns current user if logged in', async () => {
     // given
-    await authUtils.registerUser({
+    const { token } = await authUtils.registerAndLoginUser({
       email: 'test@test.com',
       password: 'password',
     });
 
     // when
     const response = await request(app.getHttpServer())
-      .post('/auth/traditional/login')
-      .send({
-        email: 'test@test.com',
-        password: 'password',
-      });
+      .get('/users/me')
+      .set('authorization', `Bearer ${token}`);
 
     // then
-    expect(response.body.token).toContain('ey');
+    expect(response.body.email).toEqual('test@test.com');
   });
 
-  it('does not log user in with incorrect password', async () => {
+  it('returns exception if not logged in', async () => {
     // given
-    await authUtils.registerUser({
-      email: 'test@test.com',
-      password: 'password',
-    });
+    const token = 'asdf';
 
     // when
     const response = await request(app.getHttpServer())
-      .post('/auth/traditional/login')
-      .send({
-        email: 'test@test.com',
-        password: 'incorrect',
-      });
+      .get('/users/me')
+      .set('authorization', `Bearer ${token}`);
 
     // then
-    expect(response.status).toBe(401);
+    expect(response.status).toEqual(401);
   });
 });

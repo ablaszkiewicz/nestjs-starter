@@ -18,4 +18,19 @@ export class AuthUtils {
 
     return response.body;
   }
+
+  public async registerAndLoginUser(
+    dto: RegisterTraditionalRequest,
+  ): Promise<TokenResponse> {
+    await this.registerUser(dto);
+
+    const response = await request(this.app.getHttpServer())
+      .post('/auth/traditional/login')
+      .send({
+        email: dto.email,
+        password: dto.password,
+      });
+
+    return response.body;
+  }
 }
