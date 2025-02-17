@@ -1,11 +1,11 @@
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
-import { createTestApp } from '../../../test/utils/bootstrap';
-import { closeInMemoryMongoServer } from '../../../test/utils/mongo-in-memory-server';
+import { closeInMemoryMongoServer } from '../../test/mongo-in-memory-server';
 import { UserEntity } from '../../user/core/entities/user.entity';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { AuthUtils } from '../../test/auth-utils';
+import { createTestApp } from '../../test/bootstrap';
 
 describe('UserCoreController', () => {
   let app: INestApplication<App>;

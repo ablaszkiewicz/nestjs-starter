@@ -9,7 +9,5 @@ import { UserCoreModule } from './user/core/user-core.module';
     AuthCoreModule,
     UserCoreModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
