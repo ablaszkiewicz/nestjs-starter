@@ -5,7 +5,7 @@ import { UserCoreModule } from './user/core/user-core.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/starter'),
+    MongooseModule.forRoot('mongodb://todo-change-this'),
     AuthCoreModule,
     UserCoreModule,
   ],
