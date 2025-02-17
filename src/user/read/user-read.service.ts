@@ -10,7 +10,7 @@ export class UserReadService {
     @InjectModel(UserEntity.name) private userModel: Model<UserEntity>,
   ) {}
 
-  public async readUserById(id: string): Promise<IUser> {
+  public async readById(id: string): Promise<IUser> {
     const user = await this.userModel.findById(id).lean<UserEntity>().exec();
 
     if (!user) {
@@ -20,7 +20,7 @@ export class UserReadService {
     return UserEntity.mapToInterface(user);
   }
 
-  public async readUserByEmail(email: string): Promise<IUser> {
+  public async readByEmail(email: string): Promise<IUser> {
     const user = await this.userModel
       .findOne({ email: email })
       .lean<UserEntity>()

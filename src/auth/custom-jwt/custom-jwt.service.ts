@@ -10,12 +10,11 @@ export class CustomJwtService {
     return this.jwtService.signAsync(payload);
   }
 
-  public async isTokenValid(token: string): Promise<boolean> {
+  public async getTokenPayload(token: string): Promise<JwtPayloadDto | null> {
     try {
-      await this.jwtService.verifyAsync(token);
-      return true;
+      return (await this.jwtService.verifyAsync(token)) as JwtPayloadDto;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 }

@@ -37,7 +37,7 @@ export class AuthTraditionalService {
   }
 
   public async login(dto: LoginTraditionalRequest): Promise<TokenResponse> {
-    const user = await this.userReadService.readUserByEmail(dto.email);
+    const user = await this.userReadService.readByEmail(dto.email);
 
     if (user.authMethod !== AuthMethod.Traditional) {
       throw new UnauthorizedException(
