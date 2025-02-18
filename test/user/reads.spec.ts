@@ -3,21 +3,21 @@ import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { UserEntity } from '../../src/user/core/entities/user.entity';
 import { Model } from 'mongoose';
-import { AuthUtils } from '../utils/auth-utils';
+import { AuthTraditionalUtils } from '../utils/auth-traditional-utils';
 import { createTestApp } from '../utils/bootstrap';
 import { closeInMemoryMongoServer } from '../utils/mongo-in-memory-server';
 
 describe('UserCoreController', () => {
   let app: INestApplication<App>;
   let userModel: Model<UserEntity>;
-  let authUtils: AuthUtils;
+  let authUtils: AuthTraditionalUtils;
 
   beforeAll(async () => {
     const result = await createTestApp();
 
     app = result.app;
     userModel = result.models.userModel;
-    authUtils = new AuthUtils(app);
+    authUtils = new AuthTraditionalUtils(app);
   });
 
   beforeEach(async () => {

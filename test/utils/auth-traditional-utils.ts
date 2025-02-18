@@ -5,7 +5,7 @@ import { RegisterTraditionalRequest } from '../../src/auth/traditonal/dto/regist
 import { TokenResponse } from '../../src/auth/traditonal/dto/token.dto';
 import { LoginTraditionalRequest } from '../../src/auth/traditonal/dto/login-traditional.dto';
 
-export class AuthUtils {
+export class AuthTraditionalUtils {
   constructor(private readonly app: INestApplication<any>) {}
 
   public async registerUser(
