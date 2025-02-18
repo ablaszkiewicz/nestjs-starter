@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegisterTraditionalRequest } from './dto/register-traditional.dto';
 import { UserWriteService } from '../../user/write/user-write.service';
 import { LoginTraditionalRequest } from './dto/login-traditional.dto';
@@ -11,7 +7,6 @@ import { AuthMethod } from '../../user/core/enum/auth-method.enum';
 import { TokenResponse } from './dto/token.dto';
 import { CustomJwtService } from '../custom-jwt/custom-jwt.service';
 import * as bcrypt from 'bcrypt';
-import { AuthEvents } from '../events/auth-events.enum';
 import { AuthEventEmitter } from '../events/auth-event.emitter';
 
 @Injectable()

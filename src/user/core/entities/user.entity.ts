@@ -16,6 +16,9 @@ export class UserEntity {
   @Prop()
   passwordHash?: string;
 
+  @Prop({ type: Date })
+  lastActivityDate: string;
+
   public static mapToInterface(user: UserEntity): IUser {
     return {
       ...user,

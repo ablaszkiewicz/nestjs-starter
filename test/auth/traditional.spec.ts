@@ -1,13 +1,14 @@
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
-import { closeInMemoryMongoServer } from '../../test/mongo-in-memory-server';
-import { UserEntity } from '../../user/core/entities/user.entity';
 import { Model, Types } from 'mongoose';
-import { AuthUtils } from '../../test/auth-utils';
-import { createTestApp } from '../../test/bootstrap';
+import { UserEntity } from '../../src/user/core/entities/user.entity';
+import { AuthUtils } from '../utils/auth-utils';
+import { createTestApp } from '../utils/bootstrap';
+import { closeInMemoryMongoServer } from '../utils/mongo-in-memory-server';
+import { sleep } from '../utils/sleep';
 
-describe('AuthTraditionalController', () => {
+describe('Auth (traditional)', () => {
   let app: INestApplication<App>;
   let userModel: Model<UserEntity>;
   let authUtils: AuthUtils;
@@ -81,5 +82,30 @@ describe('AuthTraditionalController', () => {
 
     // then
     expect(response.status).toBe(401);
+  });
+
+  it('updates user last activity date on login', async () => {
+    // given
+    await authUtils.registerUser({
+      email: 'test@test.com',
+      password: 'password',
+    });
+
+    const userBeforeLogin = (await userModel.findOne())!;
+    const lastActivityDateBeforeLogin = userBeforeLogin.lastActivityDate;
+
+    // when
+    await authUtils.loginUser({
+      email: 'test@test.com',
+      password: 'password',
+    });
+
+    // then
+    await sleep(50);
+
+    const userAfterLogin = (await userModel.findOne())!;
+    const lastActivityDateAfterLogin = userAfterLogin.lastActivityDate;
+
+    expect(lastActivityDateAfterLogin).not.toEqual(lastActivityDateBeforeLogin);
   });
 });
