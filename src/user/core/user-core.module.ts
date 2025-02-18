@@ -4,6 +4,7 @@ import { UserReadModule } from '../read/user-read.module';
 
 @Module({
   imports: [UserReadModule],
+  providers: [UserCoreController],
   controllers: [UserCoreController],
 })
 export class UserCoreModule {}

@@ -11,6 +11,8 @@ import { AuthMethod } from '../../user/core/enum/auth-method.enum';
 import { TokenResponse } from './dto/token.dto';
 import { CustomJwtService } from '../custom-jwt/custom-jwt.service';
 import * as bcrypt from 'bcrypt';
+import { AuthEvents } from '../events/auth-events.enum';
+import { AuthEventEmitter } from '../events/auth-event.emitter';
 
 @Injectable()
 export class AuthTraditionalService {
@@ -18,6 +20,7 @@ export class AuthTraditionalService {
     private readonly userWriteService: UserWriteService,
     private readonly userReadService: UserReadService,
     private readonly jwtService: CustomJwtService,
+    private readonly emitter: AuthEventEmitter,
   ) {}
 
   public async register(
@@ -31,6 +34,11 @@ export class AuthTraditionalService {
     });
 
     const token = await this.jwtService.sign({ id: user.id });
+
+    await this.emitter.emitUserRegisteredEvent({
+      userId: user.id,
+      authMethod: AuthMethod.Traditional,
+    });
 
     return {
       token,
@@ -60,6 +68,8 @@ export class AuthTraditionalService {
     }
 
     const token = await this.jwtService.sign({ id: user.id });
+
+    await this.emitter.emitUserLoggedInEvent({ userId: user.id });
 
     return { token };
   }
